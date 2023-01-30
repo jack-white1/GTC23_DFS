@@ -34,6 +34,7 @@ GENCODE_SM70	:= -gencode arch=compute_70,code=sm_70 # Volta
 GENCODE_SM75    := -gencode arch=compute_75,code=sm_75 # Turing
 GENCODE_SM80    := -gencode arch=compute_80,code=sm_80 # Ampere A100
 GENCODE_SM86    := -gencode arch=compute_86,code=sm_86 # Ampere RTX 30xx
+GENCODE_SM90	:= -gencode arch=compute_90,code=sm_90 # H100
 GENCODE_FLAGS   := $(GENCODE_SM86)
 
 ifeq ($(cache),off)
