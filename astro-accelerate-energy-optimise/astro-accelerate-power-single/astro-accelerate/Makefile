@@ -23,18 +23,19 @@ HEADERS		= include/*.hpp include/*.cuh
 INCLUDE		= -Iinclude
 
 # CUDA code generation flags
-GENCODE_SM35	:= -gencode arch=compute_35,code=sm_35 # Kepler
-GENCODE_SM37	:= -gencode arch=compute_37,code=sm_37 # Kepler
-GENCODE_SM50	:= -gencode arch=compute_50,code=sm_50 # Maxwell
-GENCODE_SM52	:= -gencode arch=compute_52,code=sm_52 # Maxwell
-GENCODE_SM53	:= -gencode arch=compute_53,code=sm_53 # Maxwell
-GENCODE_SM60	:= -gencode arch=compute_60,code=sm_60 # Pascal
-GENCODE_SM61	:= -gencode arch=compute_61,code=sm_61 # Pascal
-GENCODE_SM70	:= -gencode arch=compute_70,code=sm_70 # Volta
+GENCODE_SM35    := -gencode arch=compute_35,code=sm_35 # Kepler
+GENCODE_SM37    := -gencode arch=compute_37,code=sm_37 # Kepler
+GENCODE_SM50    := -gencode arch=compute_50,code=sm_50 # Maxwell
+GENCODE_SM52    := -gencode arch=compute_52,code=sm_52 # Maxwell
+GENCODE_SM53    := -gencode arch=compute_53,code=sm_53 # Maxwell
+GENCODE_SM60    := -gencode arch=compute_60,code=sm_60 # Pascal
+GENCODE_SM61    := -gencode arch=compute_61,code=sm_61 # Pascal
+GENCODE_SM70    := -gencode arch=compute_70,code=sm_70 # Volta
 GENCODE_SM75    := -gencode arch=compute_75,code=sm_75 # Turing
-GENCODE_SM80    := -gencode arch=compute_80,code=sm_80 # Ampere A100
-GENCODE_SM86    := -gencode arch=compute_86,code=sm_86 # Ampere RTX 30xx
-GENCODE_SM90	:= -gencode arch=compute_90,code=sm_90 # H100
+GENCODE_SM80    := -gencode arch=compute_80,code=sm_80 # A100
+GENCODE_SM86    := -gencode arch=compute_86,code=sm_86 # Ampere
+GENCODE_SM89    := -gencode arch=compute_89.code=sm_89 # 4090
+GENCODE_SM90    := -gencode arch=compute_90,code=sm_90 # H100
 GENCODE_FLAGS   := $(GENCODE_SM86)
 
 ifeq ($(cache),off)
