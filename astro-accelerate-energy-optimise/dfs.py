@@ -51,10 +51,10 @@ def energy_test(low_freq, high_freq, bfloat):
 
     if (bfloat == True):
         print("FDAS core frequency range: " +str(low_freq)+ "MHz to " +str(high_freq)+ "Mhz, bfloat16")
-        aa_str = [parent_directory + "/astro-accelerate-power-bfloat/astro-accelerate/astro-accelerate", parent_directory + "ska_input.txt", "23.23", "snr0.001", str(low_freq), str(high_freq)]
+        aa_str = [parent_directory + "astro-accelerate-power-bfloat/astro-accelerate/astro-accelerate", parent_directory + "ska_input.txt", "23.23", "snr0.001", str(low_freq), str(high_freq)]
     else:
         print("FDAS core frequency range: " +str(low_freq)+ "MHz to " +str(high_freq)+ "Mhz, single-precision")
-        aa_str = ["/astro-accelerate-power-single/astro-accelerate/astro-accelerate", parent_directory + "ska_input.txt", "23.23", "snr0.001", str(low_freq), str(high_freq)]
+        aa_str = [parent_directory + "astro-accelerate-power-single/astro-accelerate/astro-accelerate", parent_directory + "ska_input.txt", "23.23", "snr0.001", str(low_freq), str(high_freq)]
 
     proc = subprocess.Popen(command_str)    #Runs nvidia-smi in another terminal
 
@@ -115,11 +115,11 @@ if __name__ == "__main__":
 
     print("Single results output")
     with open("DFSresults.json","a") as fp:
-	json.dump(bfloat_results_array,fp)
+        json.dump(bfloat_results_array,fp)
 
     print("Single results output")
     with open("DFSresults.json","a") as fp:
-	json.dump(bfloat_results_array,fp)
+        json.dump(bfloat_results_array,fp)
 
 
 
