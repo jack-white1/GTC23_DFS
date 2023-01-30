@@ -1,0 +1,55 @@
+image: gitlab/gitlab-runner
+
+stages:
+  - build
+  - test
+  - run
+  - document
+  
+build:
+  stage: build
+  tags:
+    - astraios
+  script:
+    - pwd
+    - mkdir build/
+    - cd build/
+    - source ../setup.sh
+    - cmake -DCUDA_ARCH="6.1" -DENABLE_TESTS=ON -DENABLE_DOCS=ON ../
+    - make -j2
+  artifacts:
+    paths:
+      - build/
+      - include/aa_version.hpp
+    expire_in: 1 day
+
+test:
+  stage: test
+  tags:
+    - astraios
+  script:
+    - cd build/
+    - make test
+  dependencies:
+    - build
+
+run:
+  stage: run
+  tags:
+    - astraios
+  script:
+    - cd build/
+    - ./astro-accelerate ../input_files/BenMeerKAT.txt
+  dependencies:
+    - build
+
+document:
+  stage: document
+  tags:
+    - astraios
+  script:
+    - zip -r docs.zip build/doc/
+  artifacts:
+    paths:
+      - docs.zip
+    expire_in: 1 day
