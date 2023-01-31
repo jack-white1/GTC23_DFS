@@ -507,24 +507,24 @@ namespace astroaccelerate {
 #endif */
 
  	    // Calculating base level noise and peak find
- 	    			if(cmdargs.basic || cmdargs.kfft){
+// 	    			if(cmdargs.basic || cmdargs.kfft){
 
- 	      fdas_transfer_gpu_arrays_bfloat16_to_float(&gpuarrays_float,&gpuarrays,&cmdargs);
+// 	      fdas_transfer_gpu_arrays_bfloat16_to_float(&gpuarrays_float,&gpuarrays,&cmdargs);
  	      //gpu_arrays.d_ffdot_pwr =  gpu_arrays.d_ffdot_pwr;
 
  	      //------------- Testing BLN
  	      //float signal_mean, signal_sd;
  	      //------------- Testing BLN
- 	    				int ibin=1;
- 	    				if (cmdargs.inbin) ibin=2;
+// 	    				int ibin=1;
+// 	    				if (cmdargs.inbin) ibin=2;
 
- 	    				unsigned int list_size;
- 	    				float *d_MSD;
- 	    				float h_MSD[3];
- 	    				if ( cudaSuccess != cudaMalloc((void**) &d_MSD, sizeof(float)*3)) printf("Allocation error!\n");
- 	    				unsigned int *gmem_fdas_peak_pos;
- 	    				if ( cudaSuccess != cudaMalloc((void**) &gmem_fdas_peak_pos, 1*sizeof(int))) printf("Allocation error!\n");
- 	    				cudaMemset((void*) gmem_fdas_peak_pos, 0, sizeof(int));
+// 	    				unsigned int list_size;
+// 	    				float *d_MSD;
+// 	    				float h_MSD[3];
+// 	    				if ( cudaSuccess != cudaMalloc((void**) &d_MSD, sizeof(float)*3)) printf("Allocation error!\n");
+// 	    				unsigned int *gmem_fdas_peak_pos;
+// 	    				if ( cudaSuccess != cudaMalloc((void**) &gmem_fdas_peak_pos, 1*sizeof(int))) printf("Allocation error!\n");
+// 	    				cudaMemset((void*) gmem_fdas_peak_pos, 0, sizeof(int));
 
  	      /*
  	      __nv_bfloat162 *test_bfloat;
@@ -541,15 +541,15 @@ namespace astroaccelerate {
  		//fdas_write_ffdot((float*)(gpuarrays.d_ffdot_pwr), &cmdargs, &params, dm_low[i], dm_count, dm_step[i]);
  	      //printf("Dimensions for BLN: ibin:%d; siglen:%d;\n", ibin, params.siglen);
 
- 	      				if(NKERN>=32){
- 	      					printf("Block\n");
- 	      					MSD_grid_outlier_rejection(d_MSD, gpuarrays_float.d_ffdot_pwr, 32, 32, ibin*params.siglen, NKERN, 0, sigma_constant);
- 	      				}
- 	      				else {
- 	      					printf("Point\n");
- 	      					Find_MSD(d_MSD, gpuarrays_float.d_ffdot_pwr, params.siglen/ibin, NKERN, 0, sigma_constant, 1);
- 	      				}
-	      
+// 	      				if(NKERN>=32){
+// 	      					printf("Block\n");
+// 	      					MSD_grid_outlier_rejection(d_MSD, gpuarrays_float.d_ffdot_pwr, 32, 32, ibin*params.siglen, NKERN, 0, sigma_constant);
+//	      				}
+// 	      				else {
+// 	      					printf("Point\n");
+// 	      					Find_MSD(d_MSD, gpuarrays_float.d_ffdot_pwr, params.siglen/ibin, NKERN, 0, sigma_constant, 1);
+// 	      				}
+
 
  	      //Find_MSD(d_MSD, (float*)gpuarrays.d_ffdot_pwr, params.siglen/ibin, NKERN, 0, sigma_constant, 1);
  	      //checkCudaErrors(cudaGetLastError());
@@ -563,39 +563,39 @@ namespace astroaccelerate {
 // */
  	      				//!TEST!: do not perform peak find instead export the thing to file.
  	      				//printf("PEAK_FIND_FOR_FDAS start\n");
- 	      				PEAK_FIND_FOR_FDAS(gpuarrays_float.d_ffdot_pwr, gpuarrays_float.d_fdas_peak_list, d_MSD, NKERN, ibin*params.siglen, cmdargs.thresh, params.max_list_length, gmem_fdas_peak_pos, dm_count*dm_step[i] + dm_low[i]);
- 	      				//printf("PEAK_FIND_FOR_FDAS finish\n");
- 	      				e = cudaMemcpy(h_MSD, d_MSD, 3*sizeof(float), cudaMemcpyDeviceToHost);
+// 	      				PEAK_FIND_FOR_FDAS(gpuarrays_float.d_ffdot_pwr, gpuarrays_float.d_fdas_peak_list, d_MSD, NKERN, ibin*params.siglen, cmdargs.thresh, params.max_list_length, gmem_fdas_peak_pos, dm_count*dm_step[i] + dm_low[i]);
+// 	      				//printf("PEAK_FIND_FOR_FDAS finish\n");
+// 	      				e = cudaMemcpy(h_MSD, d_MSD, 3*sizeof(float), cudaMemcpyDeviceToHost);
 
- 	      				if(e != cudaSuccess) {
- 	      					LOG(log_level::error, "Could not cudaMemcpy in aa_device_acceleration_fdas.cu (" + std::string(cudaGetErrorString(e)) + ")");
- 	      				}
+// 	      				if(e != cudaSuccess) {
+//	      					LOG(log_level::error, "Could not cudaMemcpy in aa_device_acceleration_fdas.cu (" + std::string(cudaGetErrorString(e)) + ")");
+// 	      				}
 
- 	      				e = cudaMemcpy(&list_size, gmem_fdas_peak_pos, sizeof(unsigned int), cudaMemcpyDeviceToHost);
+// 	      				e = cudaMemcpy(&list_size, gmem_fdas_peak_pos, sizeof(unsigned int), cudaMemcpyDeviceToHost);
 
- 	      				if(e != cudaSuccess) {
- 	      					LOG(log_level::error, "Could not cudaMemcpy in aa_device_acceleration_fdas.cu (" + std::string(cudaGetErrorString(e)) + ")");
- 	      				}
+// 	      				if(e != cudaSuccess) {
+// 	      					LOG(log_level::error, "Could not cudaMemcpy in aa_device_acceleration_fdas.cu (" + std::string(cudaGetErrorString(e)) + ")");
+// 	      				}
 
- #ifdef FDAS_ACC_SIG_TEST
- 	      fdas_write_list(&gpuarrays_float, &cmdargs, &params, h_MSD, dm_low[i], dm_count, dm_step[i], list_size);
- 	      fdas_write_ffdot(gpuarrays_float.d_ffdot_pwr, &cmdargs, &params, dm_low[i], dm_count, dm_step[i]);
- 	      exit(1);
- #endif
+// #ifdef FDAS_ACC_SIG_TEST
+// 	      fdas_write_list(&gpuarrays_float, &cmdargs, &params, h_MSD, dm_low[i], dm_count, dm_step[i], list_size);
+// 	      fdas_write_ffdot(gpuarrays_float.d_ffdot_pwr, &cmdargs, &params, dm_low[i], dm_count, dm_step[i]);
+// 	      exit(1);
+// #endif
 
 
- 	      				if (enable_output_fdas_list)
- 	      				{
- 	      					if(list_size>0) {
- 								fdas_write_list(&gpuarrays_float, &cmdargs, &params, h_MSD, dm_low[i], dm_count, dm_step[i], list_size);
- 								printf("\nfdas_write_list\n");
- 							} else {
-								printf("\nno list to write");
-							}
- 	      				}
- 	      				cudaFree(d_MSD);
- 	      				cudaFree(gmem_fdas_peak_pos);
- 	  				}
+// 	      				if (enable_output_fdas_list)
+// 	      				{
+ //	      					if(list_size>0) {
+ //								fdas_write_list(&gpuarrays_float, &cmdargs, &params, h_MSD, dm_low[i], dm_count, dm_step[i], list_size);
+// 								printf("\nfdas_write_list\n");
+// 							} else {
+//								printf("\nno list to write");
+//							}
+// 	      				}
+// 	      				cudaFree(d_MSD);
+// 	      				cudaFree(gmem_fdas_peak_pos);
+// 	  				}
  	    //if (enable_output_ffdot_plan)
 
 

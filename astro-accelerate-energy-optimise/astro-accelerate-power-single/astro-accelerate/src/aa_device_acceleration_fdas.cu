@@ -471,92 +471,92 @@ namespace astroaccelerate {
 	      printf("\n\nConvolution using basic algorithm with cuFFT\nTotal process took: %f ms per iteration \nTotal time %d iterations: %f ms\n", t_gpu_i, iter, t_gpu);
 	    }
 
-#ifndef NOCUST
-	    if (cmdargs.kfft) {
-	      printf("\nMain: running FDAS with custom fft\n");
-	      gettimeofday(&t_start, NULL); //don't time transfer
-	      fdas_cuda_customfft(&fftplans, &gpuarrays, &cmdargs, &params);
-	      /*
-	       * Same question about fftplans here
-	       */
-	      cudaDeviceSynchronize();
-	      gettimeofday(&t_end, NULL);
-	      t_gpu = (double) (t_end.tv_sec + (t_end.tv_usec / 1000000.0)  - t_start.tv_sec - (t_start.tv_usec/ 1000000.0)) * 1000.0;
-	      t_gpu_i = (t_gpu / (double)iter);
-	      printf("\n\nConvolution using custom FFT:\nTotal process took: %f ms\n per iteration \nTotal time %d iterations: %f ms\n", t_gpu_i, iter, t_gpu);
-	    }
-#endif
-	    // Calculating base level noise and peak find
-	    if(cmdargs.basic || cmdargs.kfft){
-	      //------------- Testing BLN
-	      //float signal_mean, signal_sd;
-	      //------------- Testing BLN
-	      int ibin=1;
-	      if (cmdargs.inbin) ibin=2;
+// #ifndef NOCUST
+// 	    if (cmdargs.kfft) {
+// 	      printf("\nMain: running FDAS with custom fft\n");
+// 	      gettimeofday(&t_start, NULL); //don't time transfer
+// 	      fdas_cuda_customfft(&fftplans, &gpuarrays, &cmdargs, &params);
+// 	      /*
+// 	       * Same question about fftplans here
+// 	       */
+// 	      cudaDeviceSynchronize();
+// 	      gettimeofday(&t_end, NULL);
+// 	      t_gpu = (double) (t_end.tv_sec + (t_end.tv_usec / 1000000.0)  - t_start.tv_sec - (t_start.tv_usec/ 1000000.0)) * 1000.0;
+// 	      t_gpu_i = (t_gpu / (double)iter);
+// 	      printf("\n\nConvolution using custom FFT:\nTotal process took: %f ms\n per iteration \nTotal time %d iterations: %f ms\n", t_gpu_i, iter, t_gpu);
+// 	    }
+// #endif
+// 	    // Calculating base level noise and peak find
+// 	    if(cmdargs.basic || cmdargs.kfft){
+// 	      //------------- Testing BLN
+// 	      //float signal_mean, signal_sd;
+// 	      //------------- Testing BLN
+// 	      int ibin=1;
+// 	      if (cmdargs.inbin) ibin=2;
 					
-	      unsigned int list_size;
-	      float *d_MSD;
-	      float h_MSD[3];
-	      if ( cudaSuccess != cudaMalloc((void**) &d_MSD, sizeof(float)*3)) printf("Allocation error!\n");
-	      unsigned int *gmem_fdas_peak_pos;
-	      if ( cudaSuccess != cudaMalloc((void**) &gmem_fdas_peak_pos, 1*sizeof(int))) printf("Allocation error!\n");
-	      cudaMemset((void*) gmem_fdas_peak_pos, 0, sizeof(int));
+// 	      unsigned int list_size;
+// 	      float *d_MSD;
+// 	      float h_MSD[3];
+// 	      if ( cudaSuccess != cudaMalloc((void**) &d_MSD, sizeof(float)*3)) printf("Allocation error!\n");
+// 	      unsigned int *gmem_fdas_peak_pos;
+// 	      if ( cudaSuccess != cudaMalloc((void**) &gmem_fdas_peak_pos, 1*sizeof(int))) printf("Allocation error!\n");
+// 	      cudaMemset((void*) gmem_fdas_peak_pos, 0, sizeof(int));
 					
 
-	      //printf("Dimensions for BLN: ibin:%d; siglen:%d;\n", ibin, params.siglen);
-	     if(NKERN>=32){
-		printf("Block\n");
-		MSD_grid_outlier_rejection(d_MSD, gpuarrays.d_ffdot_pwr, 32, 32, ibin*params.siglen, NKERN, 0, sigma_constant);
-	      }
-	      else {
-		printf("Point\n");
-		Find_MSD(d_MSD, gpuarrays.d_ffdot_pwr, params.siglen/ibin, NKERN, 0, sigma_constant, 1);
-	      }
-	      //checkCudaErrors(cudaGetLastError());
+// 	      //printf("Dimensions for BLN: ibin:%d; siglen:%d;\n", ibin, params.siglen);
+// 	     if(NKERN>=32){
+// 		printf("Block\n");
+// 		MSD_grid_outlier_rejection(d_MSD, gpuarrays.d_ffdot_pwr, 32, 32, ibin*params.siglen, NKERN, 0, sigma_constant);
+// 	      }
+// 	      else {
+// 		printf("Point\n");
+// 		Find_MSD(d_MSD, gpuarrays.d_ffdot_pwr, params.siglen/ibin, NKERN, 0, sigma_constant, 1);
+// 	      }
+// 	      //checkCudaErrors(cudaGetLastError());
 					
-	      //!TEST!: do not perform peak find instead export the thing to file.
-#ifdef FDAS_CONV_TEST
-	      fdas_write_test_ffdot(&gpuarrays, &cmdargs, &params, dm_low[i], dm_count, dm_step[i]);
-	      exit(1);
-#endif				
-	      //!TEST!: do not perform peak find instead export the thing to file.
+// 	      //!TEST!: do not perform peak find instead export the thing to file.
+// #ifdef FDAS_CONV_TEST
+// 	      fdas_write_test_ffdot(&gpuarrays, &cmdargs, &params, dm_low[i], dm_count, dm_step[i]);
+// 	      exit(1);
+// #endif				
+// 	      //!TEST!: do not perform peak find instead export the thing to file.
 					
-	      PEAK_FIND_FOR_FDAS(gpuarrays.d_ffdot_pwr, gpuarrays.d_fdas_peak_list, d_MSD, NKERN, ibin*params.siglen, cmdargs.thresh, params.max_list_length, gmem_fdas_peak_pos, dm_count*dm_step[i] + dm_low[i]);
+// 	      PEAK_FIND_FOR_FDAS(gpuarrays.d_ffdot_pwr, gpuarrays.d_fdas_peak_list, d_MSD, NKERN, ibin*params.siglen, cmdargs.thresh, params.max_list_length, gmem_fdas_peak_pos, dm_count*dm_step[i] + dm_low[i]);
 					
-	      e = cudaMemcpy(h_MSD, d_MSD, 3*sizeof(float), cudaMemcpyDeviceToHost);
+// 	      e = cudaMemcpy(h_MSD, d_MSD, 3*sizeof(float), cudaMemcpyDeviceToHost);
 	      
-	      if(e != cudaSuccess) {
-		LOG(log_level::error, "Could not cudaMemcpy in aa_device_acceleration_fdas.cu (" + std::string(cudaGetErrorString(e)) + ")");
-	      }
+// 	      if(e != cudaSuccess) {
+// 		LOG(log_level::error, "Could not cudaMemcpy in aa_device_acceleration_fdas.cu (" + std::string(cudaGetErrorString(e)) + ")");
+// 	      }
 	      
-	      e = cudaMemcpy(&list_size, gmem_fdas_peak_pos, sizeof(unsigned int), cudaMemcpyDeviceToHost);
+// 	      e = cudaMemcpy(&list_size, gmem_fdas_peak_pos, sizeof(unsigned int), cudaMemcpyDeviceToHost);
 	      
-	      if(e != cudaSuccess) {
-		LOG(log_level::error, "Could not cudaMemcpy in aa_device_acceleration_fdas.cu (" + std::string(cudaGetErrorString(e)) + ")");
-	      }
+// 	      if(e != cudaSuccess) {
+// 		LOG(log_level::error, "Could not cudaMemcpy in aa_device_acceleration_fdas.cu (" + std::string(cudaGetErrorString(e)) + ")");
+// 	      }
 					
-#ifdef FDAS_ACC_SIG_TEST
-	      fdas_write_list(&gpuarrays, &cmdargs, &params, h_MSD, dm_low[i], dm_count, dm_step[i], list_size);
-	      fdas_write_ffdot(&gpuarrays, &cmdargs, &params, dm_low[i], dm_count, dm_step[i]);
-	      exit(1);
-#endif	
+// #ifdef FDAS_ACC_SIG_TEST
+// 	      fdas_write_list(&gpuarrays, &cmdargs, &params, h_MSD, dm_low[i], dm_count, dm_step[i], list_size);
+// 	      fdas_write_ffdot(&gpuarrays, &cmdargs, &params, dm_low[i], dm_count, dm_step[i]);
+// 	      exit(1);
+// #endif	
 		
-	      if (enable_output_fdas_list)
-		{
-		  if(list_size>0)
-		    fdas_write_list(&gpuarrays, &cmdargs, &params, h_MSD, dm_low[i], dm_count, dm_step[i], list_size);
-		}
-	      cudaFree(d_MSD);
-	      cudaFree(gmem_fdas_peak_pos);
-	    }
-	    if (enable_output_ffdot_plan)
-	    {
-		fdas_write_ffdot(&gpuarrays, &cmdargs, &params, dm_low[i], dm_count, dm_step[i]);
-		//fdas_write_ffdot_cpx(&gpuarrays, &cmdargs, &params, dm_low[i], dm_count, dm_step[i]);
-	      }
-	    // Call sofias code here pass...
-	    // output_buffer[i][dm_count],
-	  //}
+// 	      if (enable_output_fdas_list)
+// 		{
+// 		  if(list_size>0)
+// 		    fdas_write_list(&gpuarrays, &cmdargs, &params, h_MSD, dm_low[i], dm_count, dm_step[i], list_size);
+// 		}
+// 	      cudaFree(d_MSD);
+// 	      cudaFree(gmem_fdas_peak_pos);
+// 	    }
+// 	    if (enable_output_ffdot_plan)
+// 	    {
+// 		fdas_write_ffdot(&gpuarrays, &cmdargs, &params, dm_low[i], dm_count, dm_step[i]);
+// 		//fdas_write_ffdot_cpx(&gpuarrays, &cmdargs, &params, dm_low[i], dm_count, dm_step[i]);
+// 	      }
+// 	    // Call sofias code here pass...
+// 	    // output_buffer[i][dm_count],
+// 	  //}
 	}
 
       }
