@@ -699,9 +699,9 @@ void print_1D_bfloat162_array(__nv_bfloat162* d_bfloat162_array, size_t data_len
 #ifndef FDAS_CONV_TEST
     //printf("d_in_signal BEFORE CUFFT===========================================================================");
     //print_1D_bfloat16_array(gpuarrays->d_in_signal, 1024);
-    if (CUFFT_SUCCESS != cufftXtExec(fftplans->realplan, gpuarrays->d_in_signal, gpuarrays->d_fft_signal,CUFFT_FORWARD)){
-      printf("Could not cufftXtExec\n");
-    }
+    //if (CUFFT_SUCCESS != cufftExecR2C(fftplans->realplan, gpuarrays->d_in_signal, gpuarrays->d_fft_signal,CUFFT_FORWARD)){
+    //  printf("Could not cufftXtExec\n");
+    //}
     //printf("d_fft_signal AFTER CUFFT===========================================================================");
     //print_1D_bfloat162_array(gpuarrays->d_fft_signal, 2048);
 #endif
@@ -731,13 +731,13 @@ void print_1D_bfloat162_array(__nv_bfloat162* d_bfloat162_array, size_t data_len
     free(f2temp);
 #endif
 
-    //cudaStream_t stream; stream = NULL;
+    cudaStream_t stream; stream = NULL;
 
-    //call_kernel_cast_bfloat162_to_float2(gpuarrays_float->d_fft_signal, gpuarrays->d_fft_signal, params->rfftlen*sizeof(__nv_bfloat162));
+    call_kernel_cast_bfloat162_to_float2(gpuarrays_float->d_fft_signal, gpuarrays->d_fft_signal, params->rfftlen*sizeof(__nv_bfloat162));
     
-    //spectrum_whitening_SGP2((float2 *) gpuarrays_float->d_fft_signal, params->rfftlen, 1, true, stream);
+    spectrum_whitening_SGP2((float2 *) gpuarrays->d_fft_signal, params->rfftlen, 1, true, stream);
 
-    //call_kernel_cast_float2_to_bfloat162(gpuarrays->d_fft_signal, gpuarrays_float->d_fft_signal, params->rfftlen*sizeof(float2));
+    call_kernel_cast_float2_to_bfloat162(gpuarrays->d_fft_signal, gpuarrays_float->d_fft_signal, params->rfftlen*sizeof(float2));
     //REMOVE DEREDDENING HERE
     /*
     if (cmdargs->norm){
@@ -789,11 +789,11 @@ void print_1D_bfloat162_array(__nv_bfloat162* d_bfloat162_array, size_t data_len
      cudaError_t e = cudaMalloc((void**)&temp_pwrs, params->ffdotlen * sizeof(__nv_bfloat162));
      if(e != cudaSuccess) {
        printf("Could not cudaMalloc in aa_fdas_host.cu temp\n");
-     }*/
+     }/*
     //TIMEint numRepeats = 256;
     //TIMEfor (int ii = 0; ii < numRepeats; ii++){    
     cudaDeviceSynchronize();
-    auto start = high_resolution_clock::now();
+    //TIMEauto start = high_resolution_clock::now();
     //overlap-copy
     call_kernel_cuda_overlap_copy(gpuarrays->d_ext_data, gpuarrays->d_fft_signal, params->sigblock, params->rfftlen, params->extlen, params->offset, params->nblocks );
 

@@ -88,14 +88,14 @@ namespace astroaccelerate {
     //
       if (enable_inbin)
       cmdargs.inbin = 1; //
-  else
+    else
       cmdargs.inbin = 0; //
     //
-  if (enable_norm)
+    if (enable_norm)
       cmdargs.norm = 1; //
-  else
+    else
       cmdargs.norm = 0; //
-  printf("\nCMDARGS.NORM: %d\n", cmdargs.norm);
+    printf("\nCMDARGS.NORM: %d\n", cmdargs.norm);
 
     //get signal parameters
     /*acc_sig.nsamps = cmdargs.mul * 8192;  //
@@ -242,26 +242,26 @@ namespace astroaccelerate {
 	 */
 
 
-	 		fdas_alloc_gpu_arrays(&gpuarrays, &cmdargs);
+	 fdas_alloc_gpu_arrays(&gpuarrays, &cmdargs);
 
-	 		if(e != cudaSuccess) {
-	 			LOG(log_level::error, "Could not fdas_alloc_gpu_arrays in aa_device_acceleration_fdas.cu (" + std::string(cudaGetErrorString(e)) + ")");
-	 		}
+	 if(e != cudaSuccess) {
+	 	LOG(log_level::error, "Could not fdas_alloc_gpu_arrays in aa_device_acceleration_fdas.cu (" + std::string(cudaGetErrorString(e)) + ")");
+	 }
 
-	 		fdas_alloc_gpu_arrays_float(&gpuarrays_float, &cmdargs);
+	 fdas_alloc_gpu_arrays_float(&gpuarrays_float, &cmdargs);
 
-	 		if(e != cudaSuccess) {
-	 			LOG(log_level::error, "Could not fdas_alloc_gpu_arrays_float in aa_device_acceleration_fdas.cu (" + std::string(cudaGetErrorString(e)) + ")");
-	 		}
+	 if(e != cudaSuccess) {
+	 	LOG(log_level::error, "Could not fdas_alloc_gpu_arrays_float in aa_device_acceleration_fdas.cu (" + std::string(cudaGetErrorString(e)) + ")");
+	 }
 
 	//getLastCudaError("\nCuda Error\n");
 
 	// Calculate kernel templates on CPU and upload-fft on GPU
-	 		printf("\nCreating acceleration templates with KERNLEN=%d, NKERN = %d zmax=%d... ",	KERNLEN, NKERN, ZMAX);
+	 printf("\nCreating acceleration templates with KERNLEN=%d, NKERN = %d zmax=%d... ",	KERNLEN, NKERN, ZMAX);
 
 
-	 		fdas_create_bfloat_acc_kernels(gpuarrays.d_kernel, gpuarrays.temp_kernel, &cmdargs);
-	 		printf(" done.\n");
+	 fdas_create_bfloat_acc_kernels(gpuarrays.d_kernel, gpuarrays.temp_kernel, &cmdargs);
+	 printf(" done.\n");
 	//getLastCudaError("\nCuda Error\n");
 
 	/*
@@ -274,7 +274,7 @@ namespace astroaccelerate {
 	 *
 	 */
 	//Create cufft plans
-	 		fdas_cuda_create_fftplans(&fftplans, &params);
+	 fdas_cuda_create_fftplans(&fftplans, &params);
 	//getLastCudaError("\nCuda Error\n");
 
 	/*
@@ -284,33 +284,33 @@ namespace astroaccelerate {
 
 	// Starting main acceleration search
 	//cudaGetLastError(); //reset errors
-	 		printf("\n\nStarting main acceleration search\n\n");
+	 printf("\n\nStarting main acceleration search\n\n");
 
-			struct timeval tv;
-			time_t t;
-			struct tm *info;
-			char buffer[80];
+	 struct timeval tv;
+	 time_t t;
+	 struct tm *info;
+	 char buffer[80];
 
-			gettimeofday(&tv, NULL);
-			t = tv.tv_sec;
+	 gettimeofday(&tv, NULL);
+	 t = tv.tv_sec;
 
-			info = localtime(&t);
-			strftime(buffer,80,"%Y/%m/%d %H:%M:%S", info);
-			printf("\n\nFDAS_START_TIME,%s.%ld\n",buffer,tv.tv_usec);
-			
-			nvmlReturn_t nvml;
-			nvmlDevice_t nvmlDevice;
-			nvml = nvmlInit_v2();
-			nvml = nvmlDeviceGetHandleByIndex_v2 (0, &nvmlDevice );
+	 info = localtime(&t);
+	 strftime(buffer,80,"%Y/%m/%d %H:%M:%S", info);
+	 printf("\n\nFDAS_START_TIME,%s.%ld\n",buffer,tv.tv_usec);
+	 
+	 nvmlReturn_t nvml;
+	 nvmlDevice_t nvmlDevice;
+	 nvml = nvmlInit_v2();
+	 nvml = nvmlDeviceGetHandleByIndex_v2 (0, &nvmlDevice );
 
-			printf("\nSetting clock freq to %iMhz->%iMhz\n",g_low_freq,g_high_freq);
-			nvml = nvmlDeviceSetGpuLockedClocks (nvmlDevice, g_low_freq, g_high_freq );
-	 		if (nvml != NVML_SUCCESS){
-	 			printf("\nNVML error: %s\n", nvmlErrorString(nvml));
-	 		}
+	 printf("\nSetting clock freq to %iMhz->%iMhz\n",g_low_freq,g_high_freq);
+	 nvml = nvmlDeviceSetGpuLockedClocks (nvmlDevice, g_low_freq, g_high_freq );
+	 if (nvml != NVML_SUCCESS){
+	 	printf("\nNVML error: %s\n", nvmlErrorString(nvml));
+	 }
 
-	 		int iter=cmdargs.iter;
-	 		int titer=1;
+	 int iter=cmdargs.iter;
+	 int titer=1;
 
 	/*
 	 * for (int ii = 0; ii < number_dm_concurrently; ++ii)
@@ -320,29 +320,29 @@ namespace astroaccelerate {
 	 */
 
 	// FFT
-	 		for (int i = 0; i < range; i++) {
-	 			processed=samps/inBin[i];
+	 for (int i = 0; i < range; i++) {
+	 	processed=samps/inBin[i];
 
 	 			//picking the best dm to output
-	 			float temp_dist = 100000000000;
-	 			int best_dm = 0;
-	 			float cur_dist = 0.0;
+	 	float temp_dist = 100000000000;
+	 	int best_dm = 0;
+	 	float cur_dist = 0.0;
 
-	 			for (int j = 0; j < ndms[i]- 1; ++j){
-	 				cur_dist = std::abs(dm_low[i] + (j * dm_step[i]) - g_target_dm);
-	 				if (cur_dist < temp_dist){
-	 					temp_dist = cur_dist;
-	 					best_dm = j;
-	 				}
-	 			}
+	 	for (int j = 0; j < ndms[i]- 1; ++j){
+	 		cur_dist = std::abs(dm_low[i] + (j * dm_step[i]) - g_target_dm);
+	 		if (cur_dist < temp_dist){
+	 			temp_dist = cur_dist;
+	 			best_dm = j;
+	 		}
+	 	}
 
-	 			printf("DM_LOW = %f, DM_STEP = %f, NDMS[i] = %d", dm_low[i], dm_step[i], ndms[i]);
+	 	printf("DM_LOW = %f, DM_STEP = %f, NDMS[i] = %d", dm_low[i], dm_step[i], ndms[i]);
 
-	 			printf("BEST_DM: %d, with a distance of %f to %f", best_dm, std::abs(dm_low[i] + (best_dm * dm_step[i]) - g_target_dm), g_target_dm);
+	 	printf("BEST_DM: %d, with a distance of %f to %f", best_dm, std::abs(dm_low[i] + (best_dm * dm_step[i]) - g_target_dm), g_target_dm);
 
 
 
-	 			for (int dm_count = 0; dm_count < ndms[i] - 1; ++dm_count) {
+	 	for (int dm_count = 0; dm_count < ndms[i] - 1; ++dm_count) {
 	 				//if (dm_count == best_dm){
 
 	    //first time PCIe transfer and print timing
@@ -350,79 +350,79 @@ namespace astroaccelerate {
 
 	    //!TEST!: put test signal here
 #ifdef FDAS_CONV_TEST
-	    printf("\n************** TEST FOR FDAS ***********************\n");
-	    srand(time(NULL));
-	    for(int f=0; f<processed; f++) output_buffer[i][dm_count][f]=rand() / (float)RAND_MAX;
+	    			printf("\n************** TEST FOR FDAS ***********************\n");
+	    			srand(time(NULL));
+	    			for(int f=0; f<processed; f++) output_buffer[i][dm_count][f]=rand() / (float)RAND_MAX;
 
-	    	if (processed>15000){
-	    		for(int f=15000; f<processed; f++){
-	    			output_buffer[i][dm_count][f] = (f%FDAS_TEST_TOOTH_LENGTH)/500.0;
-	    		}
+	    				if (processed>15000){
+	    					for(int f=15000; f<processed; f++){
+	    						output_buffer[i][dm_count][f] = (f%FDAS_TEST_TOOTH_LENGTH)/500.0;
+	    					}
 
-	    		for(int f=0; f<192; f++){
-	    			output_buffer[i][dm_count][f + 5300] = 10.0;
-	    		}
+	    					for(int f=0; f<192; f++){
+	    						output_buffer[i][dm_count][f + 5300] = 10.0;
+	    					}
 
-	    		for(int f=0; f<128; f++){
-	    			output_buffer[i][dm_count][f + 8626] = 10.0;
-	    		}
+	    					for(int f=0; f<128; f++){
+	    						output_buffer[i][dm_count][f + 8626] = 10.0;
+	    					}
 
-	    		for(int f=0; f<36; f++){
-	    			output_buffer[i][dm_count][f + 9626] = 10.0;
-	    		}
+	    					for(int f=0; f<36; f++){
+	    						output_buffer[i][dm_count][f + 9626] = 10.0;
+	    					}
 
-	    		for(int f=0; f<83; f++){
-	    			output_buffer[i][dm_count][f + 10626] = 10.0;
-	    		}
+	    					for(int f=0; f<83; f++){
+	    						output_buffer[i][dm_count][f + 10626] = 10.0;
+	    					}
 
-	    		for(int f=0; f<138; f++){
-	    			output_buffer[i][dm_count][f + 11626] = 10.0;
-	    		}
-	    	}
+	    					for(int f=0; f<138; f++){
+	    						output_buffer[i][dm_count][f + 11626] = 10.0;
+	    					}
+	    				}
 
-	    	std::ofstream FILEOUT;
-	    	FILEOUT.open ("acc_conv_test_input_signal.dat", std::ofstream::out);
-	    	for(int f=0; f<processed; f++){
-	    		FILEOUT << output_buffer[i][dm_count][f] << std::endl;
-	    	}
-	    	FILEOUT.close();
+	    				std::ofstream FILEOUT;
+	    				FILEOUT.open ("acc_conv_test_input_signal.dat", std::ofstream::out);
+	    				for(int f=0; f<processed; f++){
+	    					FILEOUT << output_buffer[i][dm_count][f] << std::endl;
+	    				}
+	    				FILEOUT.close();
 #endif
 
 #ifdef FDAS_ACC_SIG_TEST
-	    	double acc_sig_snr = 1.0;
-	    	fdas_new_acc_sig acc_sig;
+	    				double acc_sig_snr = 1.0;
+	    				fdas_new_acc_sig acc_sig;
 
-	    	acc_sig.freq0 = FDAS_TEST_FREQUENCY;
-	    	acc_sig.nsamps = processed;
-	    	acc_sig.zval = FDAS_TEST_ZVALUE;
-	    	acc_sig.nharms = FDAS_TEST_HAMONICS;
-	    	acc_sig.duty = FDAS_TEST_DUTY_CYCLE/100.0;
-	    	acc_sig.sigamp = FDAS_TEST_SIGNAL_AMPLITUDE;
+	    				acc_sig.freq0 = FDAS_TEST_FREQUENCY;
+	    				acc_sig.nsamps = processed;
+	    				acc_sig.zval = FDAS_TEST_ZVALUE;
+	    				acc_sig.nharms = FDAS_TEST_HAMONICS;
+	    				acc_sig.duty = FDAS_TEST_DUTY_CYCLE/100.0;
+	    				acc_sig.sigamp = FDAS_TEST_SIGNAL_AMPLITUDE;
 
-	    	double t0, tau;
-	    	double omega = 2*M_PI*acc_sig.freq0;
-	    	double accel;
-	    	double tobs;
-	    	double sampling_rate = 0.000064;
-	    	double light_speed = 2.99792458e8;
+	    				double t0, tau;
+	    				double omega = 2*M_PI*acc_sig.freq0;
+	    				double accel;
+	    				double tobs;
+	    				double sampling_rate = 0.000064;
+	    				double light_speed = 2.99792458e8;
 
-	    	tobs = (double) (sampling_rate*acc_sig.nsamps);
-	    	accel = ((double)acc_sig.zval * light_speed) / (acc_sig.freq0*tobs*tobs);
-	    	printf("\n\npreparing test signal, observation time = %f s, %d nsamps f0 = %f Hz with %d harmonics\n", tobs, acc_sig.nsamps, acc_sig.freq0, acc_sig.nharms);
-	    	printf("\nz = %d accelereation = %f m/s^2\n", acc_sig.zval, accel);
+	    				tobs = (double) (sampling_rate*acc_sig.nsamps);
+	    				accel = ((double)acc_sig.zval * light_speed) / (acc_sig.freq0*tobs*tobs);
+	    				printf("\n\npreparing test signal, observation time = %f s, %d nsamps f0 = %f Hz with %d harmonics\n", tobs, acc_sig.nsamps, acc_sig.freq0, acc_sig.nharms);
+	    				printf("\nz = %d accelereation = %f m/s^2\n", acc_sig.zval, accel);
 
-	    	printf("\nNow creating accelerated signal with fc=%f, accel=%f, harmonics=%d, duty cycle=%.1f, noise=%f signal samples=%d, signal level: %.2f\n", acc_sig.freq0, accel, acc_sig.nharms, acc_sig.duty*100.0, acc_sig_snr, acc_sig.nsamps,acc_sig.sigamp);
+	    				printf("\nNow creating accelerated signal with fc=%f, accel=%f, harmonics=%d, duty cycle=%.1f, noise=%f signal samples=%d, signal level: %.2f\n", acc_sig.freq0, accel, acc_sig.nharms, acc_sig.duty*100.0, acc_sig_snr, acc_sig.nsamps,acc_sig.sigamp);
 
-	    	for ( int sd=0; sd<acc_sig.nsamps; ++sd){
-	    		t0 = sd*sampling_rate;
-	    		tau = t0 + (t0*(accel*t0) / light_speed /2.0);
-	    		if (acc_sig_snr!=0){
-	    			output_buffer[i][dm_count][sd] = 0;
-	    		}
-	    		for (int j = 1; j <= acc_sig.nharms; ++j){
-	    			output_buffer[i][dm_count][sd] += (2.0/(j*M_PI)*sin(j*M_PI*acc_sig.duty))*acc_sig.sigamp*cos(j*omega*tau); 
-	    		}
-	    	}
+	    				for ( int sd=0; sd<acc_sig.nsamps; ++sd){
+	    					t0 = sd*sampling_rate;
+	    					tau = t0 + (t0*(accel*t0) / light_speed /2.0);
+	    					if (acc_sig_snr!=0){
+	    						output_buffer[i][dm_count][sd] = 0;
+	    					}
+	    					for (int j = 1; j <= acc_sig.nharms; ++j){
+	    						output_buffer[i][dm_count][sd] += (2.0/(j*M_PI)*sin(j*M_PI*acc_sig.duty))*acc_sig.sigamp*cos(j*omega*tau); 
+	    					}
+	    				}
 #endif
 	    //!TEST!: put test signal here
 
@@ -439,37 +439,37 @@ namespace astroaccelerate {
     	}*/
 
 
-    				e = cudaMemcpy(gpuarrays_float.d_in_signal, output_buffer[i][dm_count], processed*sizeof(float), cudaMemcpyHostToDevice);
+    		e = cudaMemcpy(gpuarrays_float.d_in_signal, output_buffer[i][dm_count], processed*sizeof(float), cudaMemcpyHostToDevice);
 
-    				call_kernel_cast_float_to_bfloat16(gpuarrays.d_in_signal, gpuarrays_float.d_in_signal, processed*sizeof(float) );
+    		call_kernel_cast_float_to_bfloat16(gpuarrays.d_in_signal, gpuarrays_float.d_in_signal, processed*sizeof(float) );
 
-	    			//compare_1D_arrays(gpuarrays_float.d_in_signal,gpuarrays.d_in_signal, 1024);
+    		compare_1D_arrays(gpuarrays_float.d_in_signal,gpuarrays.d_in_signal, 1024);
 	    			//print_1D_bfloat16_array(gpuarrays.d_in_signal,processed*sizeof(__nv_bfloat16));
 
-	    			if(e != cudaSuccess) {
-	    				LOG(log_level::error, "Could not cudaMemcpy in aa_device_acceleration.cu (" + std::string(cudaGetErrorString(e)) + ")");
-	    			}
+    		if(e != cudaSuccess) {
+    			LOG(log_level::error, "Could not cudaMemcpy in aa_device_acceleration.cu (" + std::string(cudaGetErrorString(e)) + ")");
+    		}
 
 	    // This line is deliberately commented out
 	    //checkCudaErrors( cudaMemcpyAsync(gpuarrays_list[i].d_in_signal, output_buffer[i][dm_count], processed*sizeof(float), cudaMemcpyHostToDevice, stream_list[ii]));
 
-	    			cudaDeviceSynchronize();
-	    			gettimeofday(&t_end, NULL);
-	    			t_gpu = (double) (t_end.tv_sec + (t_end.tv_usec / 1000000.0)  - t_start.tv_sec - (t_start.tv_usec/ 1000000.0)) * 1000.0;
-	    			t_gpu_i = (t_gpu /(double)titer);
-	    			printf("\n\nAverage vector transfer time of %d float samples (%.2f Mb) from 1000 iterations: %f ms\n\n", params.nsamps, (float)(gpuarrays.mem_insig)/mbyte, t_gpu_i);
+    		cudaDeviceSynchronize();
+    		gettimeofday(&t_end, NULL);
+    		t_gpu = (double) (t_end.tv_sec + (t_end.tv_usec / 1000000.0)  - t_start.tv_sec - (t_start.tv_usec/ 1000000.0)) * 1000.0;
+    		t_gpu_i = (t_gpu /(double)titer);
+    		printf("\n\nAverage vector transfer time of %d float samples (%.2f Mb) from 1000 iterations: %f ms\n\n", params.nsamps, (float)(gpuarrays.mem_insig)/mbyte, t_gpu_i);
 
 	    			cudaProfilerStart(); //exclude cuda initialization ops
 	    			if(cmdargs.basic) {
 	      				gettimeofday(&t_start, NULL); //don't time transfer
 
 	      				#ifndef FDAS_CONV_TEST
-							if (CUFFT_SUCCESS != cufftExecR2C(fftplans.realplan, gpuarrays_float.d_in_signal, gpuarrays_float.d_fft_signal)){
-								printf("Could not cufftXtExec\n");
-							}
-							cudaDeviceSynchronize();
-							call_kernel_cast_float2_to_bfloat162(gpuarrays.d_fft_signal, gpuarrays_float.d_fft_signal, (1+(params.nsamps/2))*sizeof(float2));
-							//printf("gpuarrays.d_fft_signal straight after single transform:\n");
+	      				if (CUFFT_SUCCESS != cufftExecR2C(fftplans.realplan, gpuarrays_float.d_in_signal, gpuarrays_float.d_fft_signal)){
+	      					printf("Could not cufftXtExec\n");
+	      				}
+	      				cudaDeviceSynchronize();
+	      				call_kernel_cast_float2_to_bfloat162(gpuarrays.d_fft_signal, gpuarrays_float.d_fft_signal, (1+(params.nsamps/2))*sizeof(float2));
+	      				printf("gpuarrays.d_fft_signal straight after single transform:\n");
 							//print_1D_bfloat162_array(gpuarrays.d_fft_signal, 2048);
 						#endif
 
@@ -483,12 +483,12 @@ namespace astroaccelerate {
 	      /*
 	       * Same question about fftplans here
 	       */
-	       				cudaDeviceSynchronize();
-	       				gettimeofday(&t_end, NULL);
-	       				t_gpu = (double) (t_end.tv_sec + (t_end.tv_usec / 1000000.0)  - t_start.tv_sec - (t_start.tv_usec/ 1000000.0)) * 1000.0;
-	       				t_gpu_i = (t_gpu / (double)iter);
-	       				printf("\n\nConvolution using basic algorithm with cuFFT\nTotal process took: %f ms per iteration \nTotal time %d iterations: %f ms\n", t_gpu_i, iter, t_gpu);
-	   				}
+	       cudaDeviceSynchronize();
+	       gettimeofday(&t_end, NULL);
+	       t_gpu = (double) (t_end.tv_sec + (t_end.tv_usec / 1000000.0)  - t_start.tv_sec - (t_start.tv_usec/ 1000000.0)) * 1000.0;
+	       t_gpu_i = (t_gpu / (double)iter);
+	       printf("\n\nConvolution using basic algorithm with cuFFT\nTotal process took: %f ms per iteration \nTotal time %d iterations: %f ms\n", t_gpu_i, iter, t_gpu);
+	     }
 
 /*#ifndef NOCUST
 	    if (cmdargs.kfft) {
@@ -506,15 +506,15 @@ namespace astroaccelerate {
 	    }
 #endif */
 
- 	    // Calculating base level noise and peak find
+// 	    // Calculating base level noise and peak find
 // 	    			if(cmdargs.basic || cmdargs.kfft){
 
 // 	      fdas_transfer_gpu_arrays_bfloat16_to_float(&gpuarrays_float,&gpuarrays,&cmdargs);
- 	      //gpu_arrays.d_ffdot_pwr =  gpu_arrays.d_ffdot_pwr;
+// 	      //gpu_arrays.d_ffdot_pwr =  gpu_arrays.d_ffdot_pwr;
 
- 	      //------------- Testing BLN
- 	      //float signal_mean, signal_sd;
- 	      //------------- Testing BLN
+// 	      //------------- Testing BLN
+// 	      //float signal_mean, signal_sd;
+// 	      //------------- Testing BLN
 // 	    				int ibin=1;
 // 	    				if (cmdargs.inbin) ibin=2;
 
@@ -526,49 +526,49 @@ namespace astroaccelerate {
 // 	    				if ( cudaSuccess != cudaMalloc((void**) &gmem_fdas_peak_pos, 1*sizeof(int))) printf("Allocation error!\n");
 // 	    				cudaMemset((void*) gmem_fdas_peak_pos, 0, sizeof(int));
 
- 	      /*
- 	      __nv_bfloat162 *test_bfloat;
- 	      test_bfloat = (__nv_bfloat162*) malloc(4);
- 	      (*test_bfloat).x = (__nv_bfloat16)1024;
- 	      (*test_bfloat).y = (__nv_bfloat16)0;
+// 	      /*
+// 	      __nv_bfloat162 *test_bfloat;
+// 	      test_bfloat = (__nv_bfloat162*) malloc(4);
+// 	      (*test_bfloat).x = (__nv_bfloat16)1024;
+// 	      (*test_bfloat).y = (__nv_bfloat16)0;
 
- 	      printf("test_bfloat: %p, *test_bfloat: %hu\n", test_bfloat, *(unsigned int*)test_bfloat);
- 			*/
+// 	      printf("test_bfloat: %p, *test_bfloat: %hu\n", test_bfloat, *(unsigned int*)test_bfloat);
+// 			*/
 
- 	      //printf("gpuarrays.d_ffdot_pwr: %p\n",gpuarrays.d_ffdot_pwr);
+// 	      //printf("gpuarrays.d_ffdot_pwr: %p\n",gpuarrays.d_ffdot_pwr);
 
- 	      //printf("***********************************************************************FILE WRITING CONTENTS AT: %p\n", gpuarrays.d_ffdot_pwr);
- 		//fdas_write_ffdot((float*)(gpuarrays.d_ffdot_pwr), &cmdargs, &params, dm_low[i], dm_count, dm_step[i]);
- 	      //printf("Dimensions for BLN: ibin:%d; siglen:%d;\n", ibin, params.siglen);
+// 	      //printf("***********************************************************************FILE WRITING CONTENTS AT: %p\n", gpuarrays.d_ffdot_pwr);
+// 		//fdas_write_ffdot((float*)(gpuarrays.d_ffdot_pwr), &cmdargs, &params, dm_low[i], dm_count, dm_step[i]);
+// 	      //printf("Dimensions for BLN: ibin:%d; siglen:%d;\n", ibin, params.siglen);
 
 // 	      				if(NKERN>=32){
 // 	      					printf("Block\n");
 // 	      					MSD_grid_outlier_rejection(d_MSD, gpuarrays_float.d_ffdot_pwr, 32, 32, ibin*params.siglen, NKERN, 0, sigma_constant);
-//	      				}
+// 	      				}
 // 	      				else {
 // 	      					printf("Point\n");
 // 	      					Find_MSD(d_MSD, gpuarrays_float.d_ffdot_pwr, params.siglen/ibin, NKERN, 0, sigma_constant, 1);
 // 	      				}
+	    
 
+// 	      //Find_MSD(d_MSD, (float*)gpuarrays.d_ffdot_pwr, params.siglen/ibin, NKERN, 0, sigma_constant, 1);
+// 	      //checkCudaErrors(cudaGetLastError());
 
- 	      //Find_MSD(d_MSD, (float*)gpuarrays.d_ffdot_pwr, params.siglen/ibin, NKERN, 0, sigma_constant, 1);
- 	      //checkCudaErrors(cudaGetLastError());
-
- 	      //!TEST!: do not perform peak find instead export the thing to file.
- /*
+// 	      //!TEST!: do not perform peak find instead export the thing to file.
+// /*
 // #ifdef FDAS_CONV_TEST
 // 	      fdas_write_test_ffdot(&gpuarrays, &cmdargs, &params, dm_low[i], dm_count, dm_step[i]);
 // 	      exit(1);
 // #endif
 // */
- 	      				//!TEST!: do not perform peak find instead export the thing to file.
- 	      				//printf("PEAK_FIND_FOR_FDAS start\n");
+// 	      				//!TEST!: do not perform peak find instead export the thing to file.
+// 	      				//printf("PEAK_FIND_FOR_FDAS start\n");
 // 	      				PEAK_FIND_FOR_FDAS(gpuarrays_float.d_ffdot_pwr, gpuarrays_float.d_fdas_peak_list, d_MSD, NKERN, ibin*params.siglen, cmdargs.thresh, params.max_list_length, gmem_fdas_peak_pos, dm_count*dm_step[i] + dm_low[i]);
 // 	      				//printf("PEAK_FIND_FOR_FDAS finish\n");
 // 	      				e = cudaMemcpy(h_MSD, d_MSD, 3*sizeof(float), cudaMemcpyDeviceToHost);
 
 // 	      				if(e != cudaSuccess) {
-//	      					LOG(log_level::error, "Could not cudaMemcpy in aa_device_acceleration_fdas.cu (" + std::string(cudaGetErrorString(e)) + ")");
+// 	      					LOG(log_level::error, "Could not cudaMemcpy in aa_device_acceleration_fdas.cu (" + std::string(cudaGetErrorString(e)) + ")");
 // 	      				}
 
 // 	      				e = cudaMemcpy(&list_size, gmem_fdas_peak_pos, sizeof(unsigned int), cudaMemcpyDeviceToHost);
@@ -586,17 +586,15 @@ namespace astroaccelerate {
 
 // 	      				if (enable_output_fdas_list)
 // 	      				{
- //	      					if(list_size>0) {
- //								fdas_write_list(&gpuarrays_float, &cmdargs, &params, h_MSD, dm_low[i], dm_count, dm_step[i], list_size);
+// 	      					if(list_size>0) {
+// 								fdas_write_list(&gpuarrays_float, &cmdargs, &params, h_MSD, dm_low[i], dm_count, dm_step[i], list_size);
 // 								printf("\nfdas_write_list\n");
-// 							} else {
-//								printf("\nno list to write");
-//							}
+// 							}
 // 	      				}
 // 	      				cudaFree(d_MSD);
 // 	      				cudaFree(gmem_fdas_peak_pos);
 // 	  				}
- 	    //if (enable_output_ffdot_plan)
+// 	    //if (enable_output_ffdot_plan)
 
 
 // 	  //if (enable_output_ffdot_plan && (((dm_low[i] + ((float)dm_count)*dm_step[i]) < g_target_dm + 0.01) && (dm_low[i] + ((float)dm_count)*dm_step[i] > g_target_dm - 0.01)))
@@ -610,30 +608,30 @@ namespace astroaccelerate {
 	    // Call sofias code here pass...
 	    // output_buffer[i][dm_count],
 				//}
-	  			}
-			}
-			struct timeval tv2;
-			time_t t2;
-			struct tm *info2;
-			char buffer2[80];
+	  }
+	}
+	struct timeval tv2;
+	time_t t2;
+	struct tm *info2;
+	char buffer2[80];
 
-			gettimeofday(&tv2, NULL);
-			t2 = tv2.tv_sec;
+	gettimeofday(&tv2, NULL);
+	t2 = tv2.tv_sec;
 
-			info2 = localtime(&t2);
-			strftime(buffer2,80,"%Y/%m/%d %H:%M:%S", info2);
-			printf("\nFDAS_END_TIME,%s.%ld\n",buffer2,tv2.tv_usec);
+	info2 = localtime(&t2);
+	strftime(buffer2,80,"%Y/%m/%d %H:%M:%S", info2);
+	printf("\nFDAS_END_TIME,%s.%ld\n",buffer2,tv2.tv_usec);
 
-			nvml = nvmlShutdown();
-		}
+	nvml = nvmlShutdown();
+}
 
-		if (cmdargs.search)
-		{
-			cufftDestroy(fftplans.realplan);
-			cufftDestroy(fftplans.forwardplan);
+if (cmdargs.search)
+{
+	cufftDestroy(fftplans.realplan);
+	cufftDestroy(fftplans.forwardplan);
 	// releasing GPU arrays
-			fdas_free_gpu_arrays_float(&gpuarrays_float, &cmdargs);
-			fdas_free_gpu_arrays(&gpuarrays, &cmdargs);
+	fdas_free_gpu_arrays_float(&gpuarrays_float, &cmdargs);
+	fdas_free_gpu_arrays(&gpuarrays, &cmdargs);
 
 	/* -- release what has to be released
 	 * -- don't forget it's pinned memory here so write a function which uses cudaFreeHost
@@ -646,6 +644,6 @@ namespace astroaccelerate {
 	 *     cudaStreamDestroy(&stream_list[i]);
 	 * }
 	 */
-		}
 	}
+}
 } //namespace astroaccelerate
