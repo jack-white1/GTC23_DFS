@@ -47,7 +47,7 @@ def energy_test(low_freq, high_freq, bfloat):
 
     command_str = ["nvidia-smi", "--query-gpu=timestamp,power.draw,clocks.current.sm,clocks.current.memory,utilization.gpu,utilization.memory,temperature.gpu", "--format=csv,nounits,noheader", "-i", "0", "-f", "{}/{}.txt".format(filepath, filename), "-lms", "{}".format(sampling_period)]
 
-    parent_directory = "/home/PATH/TO/PARENT/FOLDER/astro-accelerate-energy-optimise"
+    parent_directory = "/home/PATH/TO/PARENT/GTC23_DFS/astro-accelerate-energy-optimise"
 
     if (bfloat == True):
         print("FDAS core frequency range: " +str(low_freq)+ "MHz to " +str(high_freq)+ "Mhz, bfloat16")

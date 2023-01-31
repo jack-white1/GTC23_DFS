@@ -39,4 +39,4 @@ fdas_norm
 debug
 -analysis_debug
 -failsafe
-file /data/oerc-astro-accelerate/sedm5426/data/realfil/seed82733snr0.1.fil
+file /data/oerc-astro-accelerate/sedm5426/data/realfil/SKA_STD_10ms.fil
