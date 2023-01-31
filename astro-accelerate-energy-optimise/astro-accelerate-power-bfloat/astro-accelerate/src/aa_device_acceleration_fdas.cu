@@ -443,7 +443,7 @@ namespace astroaccelerate {
 
     		call_kernel_cast_float_to_bfloat16(gpuarrays.d_in_signal, gpuarrays_float.d_in_signal, processed*sizeof(float) );
 
-    		compare_1D_arrays(gpuarrays_float.d_in_signal,gpuarrays.d_in_signal, 1024);
+    		//compare_1D_arrays(gpuarrays_float.d_in_signal,gpuarrays.d_in_signal, 1024);
 	    			//print_1D_bfloat16_array(gpuarrays.d_in_signal,processed*sizeof(__nv_bfloat16));
 
     		if(e != cudaSuccess) {
