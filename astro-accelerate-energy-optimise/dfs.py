@@ -47,14 +47,14 @@ def energy_test(low_freq, high_freq, bfloat):
 
     command_str = ["nvidia-smi", "--query-gpu=timestamp,power.draw,clocks.current.sm,clocks.current.memory,utilization.gpu,utilization.memory,temperature.gpu", "--format=csv,nounits,noheader", "-i", "0", "-f", "{}/{}.txt".format(filepath, filename), "-lms", "{}".format(sampling_period)]
 
-    parent_directory = "/home/PATH/TO/PARENT/FOLDER/astro-accelerate-energy-optimise/"
+    parent_directory = "/home/PATH/TO/PARENT/FOLDER/astro-accelerate-energy-optimise"
 
     if (bfloat == True):
         print("FDAS core frequency range: " +str(low_freq)+ "MHz to " +str(high_freq)+ "Mhz, bfloat16")
-        aa_str = [parent_directory + "astro-accelerate-power-bfloat/astro-accelerate/astro-accelerate", parent_directory + "ska_input.txt", "23.23", "snr0.001", str(low_freq), str(high_freq)]
+        aa_str = [parent_directory + "/astro-accelerate-power-bfloat/astro-accelerate/astro-accelerate", parent_directory + "ska_input.txt", "23.23", "snr0.001", str(low_freq), str(high_freq)]
     else:
         print("FDAS core frequency range: " +str(low_freq)+ "MHz to " +str(high_freq)+ "Mhz, single-precision")
-        aa_str = [parent_directory + "astro-accelerate-power-single/astro-accelerate/astro-accelerate", parent_directory + "ska_input.txt", "23.23", "snr0.001", str(low_freq), str(high_freq)]
+        aa_str = [parent_directory + "/astro-accelerate-power-single/astro-accelerate/astro-accelerate", parent_directory + "ska_input.txt", "23.23", "snr0.001", str(low_freq), str(high_freq)]
 
     proc = subprocess.Popen(command_str)    #Runs nvidia-smi in another terminal
 

@@ -368,8 +368,8 @@ namespace astroaccelerate {
     free(ftemp);
     free(f2temp);
 #endif
-    cudaStream_t stream; stream = NULL;
-    spectrum_whitening_SGP2((float2 *) gpuarrays->d_fft_signal, params->rfftlen, 1, true, stream);
+    //cudaStream_t stream; stream = NULL;
+    //spectrum_whitening_SGP2((float2 *) gpuarrays->d_fft_signal, params->rfftlen, 1, true, stream);
     //REMOVE DEREDDEN HERE
     /*
     if (cmdargs->norm){

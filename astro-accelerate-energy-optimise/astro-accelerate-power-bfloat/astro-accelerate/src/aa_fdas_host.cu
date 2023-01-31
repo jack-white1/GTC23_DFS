@@ -731,13 +731,13 @@ void print_1D_bfloat162_array(__nv_bfloat162* d_bfloat162_array, size_t data_len
     free(f2temp);
 #endif
 
-    cudaStream_t stream; stream = NULL;
+    //cudaStream_t stream; stream = NULL;
 
-    call_kernel_cast_bfloat162_to_float2(gpuarrays_float->d_fft_signal, gpuarrays->d_fft_signal, params->rfftlen*sizeof(__nv_bfloat162));
+    //call_kernel_cast_bfloat162_to_float2(gpuarrays_float->d_fft_signal, gpuarrays->d_fft_signal, params->rfftlen*sizeof(__nv_bfloat162));
     
-    spectrum_whitening_SGP2((float2 *) gpuarrays_float->d_fft_signal, params->rfftlen, 1, true, stream);
+    //spectrum_whitening_SGP2((float2 *) gpuarrays_float->d_fft_signal, params->rfftlen, 1, true, stream);
 
-    call_kernel_cast_float2_to_bfloat162(gpuarrays->d_fft_signal, gpuarrays_float->d_fft_signal, params->rfftlen*sizeof(float2));
+    //call_kernel_cast_float2_to_bfloat162(gpuarrays->d_fft_signal, gpuarrays_float->d_fft_signal, params->rfftlen*sizeof(float2));
     //REMOVE DEREDDENING HERE
     /*
     if (cmdargs->norm){
