@@ -34,9 +34,9 @@ GENCODE_SM70	:= -gencode arch=compute_70,code=sm_70 # Volta
 GENCODE_SM75    := -gencode arch=compute_75,code=sm_75 # Turing
 GENCODE_SM80	:= -gencode arch=compute_80,code=sm_80 # A100
 GENCODE_SM86	:= -gencode arch=compute_86,code=sm_86 # Ampere
-GENCODE_SM89	:= -gencode arch=compute_89.code=sm_89 # 4090
+GENCODE_SM89	:= -gencode arch=compute_89,code=sm_89 # 4090
 GENCODE_SM90	:= -gencode arch=compute_90,code=sm_90 # H100
-GENCODE_FLAGS   := $(GENCODE_SM86)
+GENCODE_FLAGS   := $(GENCODE_SM90)
 
 ifeq ($(cache),off)
         NVCCFLAGS := $(INC) ${INCLUDE} -g -lineinfo -Xcompiler -O3 -lm --use_fast_math\
