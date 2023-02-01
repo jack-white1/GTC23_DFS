@@ -113,13 +113,13 @@ if __name__ == "__main__":
             results_dict = {"results":results, "low_freq":freq_array[i], "high_freq":freq_array[i+1]}
             single_results_array.append(results_dict)
 
-    print("Single results output")
-    with open("DFSresults.json","a") as fp:
+    print("Bfloat16 results output")
+    with open("bfloatDFSresults.json","a") as fp:
         json.dump(bfloat_results_array,fp)
 
     print("Single results output")
-    with open("DFSresults.json","a") as fp:
-        json.dump(bfloat_results_array,fp)
+    with open("singleDFSresults.json","a") as fp:
+        json.dump(single_results_array,fp)
 
 
 
