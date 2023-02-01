@@ -12,10 +12,9 @@
 
 ## Setup
 4. Change the python script to include the correct file path
-    1. `cd ../..`
-    2. Copy the output from running `pwd`
-    3. Open `dfs.py` in text editor of choice
-    4. On line 50, change `/home/PATH/TO/PARENT/FOLDER/astro-accelerate-energy-optimise/` to the full path to the folder ending with `/astro-accelerate-energy-optimise/`
+    1. Copy the output from running `pwd`
+    2. Open `dfs.py` in text editor of choice
+    3. On line 50, change `/home/PATH/TO/PARENT/FOLDER/astro-accelerate-energy-optimise/` to the full path to the folder ending with `/astro-accelerate-energy-optimise/`
 5. Change AstroAccelerate input file to point to the .fil file
     1. Open `ska_input.txt` in text editor of choice
     2.  Change last line of `ska_input.txt` to include the path of the `.fil` file downloaded in step 3, e.g. `file /home/user/GTC23_DFS/astro-accelerate-energy-optimise/SKA_STD_10ms.fil`
