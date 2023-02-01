@@ -36,7 +36,8 @@
 	4. `make`
 
 ## Run
-8. Run the code from the `/GTC23_DFS/astro-accelerate-energy-optimise/` directory using `sudo python3 dfs.py`
-9. The output should be saved in `.json` format in files called `bfloatDFSresults.json` and `singleDFSresults.json`
+8. **The following step must be run with sudo**
+9. Run the code from the `/GTC23_DFS/astro-accelerate-energy-optimise/` directory using `sudo python3 dfs.py`
+10. The output should be saved in `.json` format in files called `bfloatDFSresults.json` and `singleDFSresults.json`
 
    
