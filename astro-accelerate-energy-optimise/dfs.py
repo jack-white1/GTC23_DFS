@@ -102,8 +102,8 @@ def energy_test(low_freq, high_freq, bfloat):
 if __name__ == "__main__":
     bfloat_results_array = []
     single_results_array = []
-    freq_array = np.asarray(np.linspace(500,2000,31))			# 500 to 2000Mhz range, e.g. 500, 550, ... 1950, 2000
-    numrepeats = 5							# 5 repeats to average results
+    freq_array = np.asarray(np.linspace(500,2000,16))			# 500 to 2000Mhz range, e.g. 500, 600, ... 1900, 2000
+    numrepeats = 3							# 5 repeats to average results
     for i in range(len(freq_array)-1):
         for j in range(numrepeats):
             results = energy_test(freq_array[i], freq_array[i+1], True)
