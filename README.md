@@ -34,6 +34,7 @@
 	2. `make`
 	3. `cd ../../astro-accelerate-power-single/astro-accelerate/`
 	4. `make`
+	5. `cd ../..`
 
 ## Run
 8. **The following step must be run with sudo**
